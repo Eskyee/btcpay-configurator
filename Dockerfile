@@ -1,9 +1,8 @@
 FROM btcpayserver/btcpayserver-configurator:latest
 
-EXPOSE 80
+EXPOSE 8080
 
-# Railway will set the PORT env var
-ENV PORT=80
+ENV PORT=8080
 
-# Run the Configurator
-ENTRYPOINT ["dotnet", "BTCPayServer.Configurator.dll"]
+# Railway injects PORT at runtime, so force ASP.NET to bind on all interfaces.
+ENTRYPOINT ["sh", "-c", "export ASPNETCORE_URLS=http://0.0.0.0:${PORT:-8080}; exec dotnet BTCPayServerDockerConfigurator.dll"]
